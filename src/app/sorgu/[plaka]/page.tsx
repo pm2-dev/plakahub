@@ -5,7 +5,7 @@ import DownloadApp from "@/components/DownloadApp";
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 interface SocialProfile {
-  platform: "INSTAGRAM" | "TWITTER" | "TIKTOK";
+  platform: string;
   username: string;
 }
 
@@ -80,6 +80,24 @@ const PLATFORM_CONFIG: Record<
   },
 };
 
+function getDefaultIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
+      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function getPlatformConfig(platform: string) {
+  const config = PLATFORM_CONFIG[platform];
+  if (config) return config;
+  return {
+    label: platform.charAt(0) + platform.slice(1).toLowerCase(),
+    icon: getDefaultIcon(),
+    style: "bg-indigo-500 text-white",
+  };
+}
+
 function LicensePlate({ plaka }: { plaka: string }) {
   return (
     <div className="inline-flex items-stretch overflow-hidden rounded-md border-2 border-gray-700 shadow-md">
@@ -131,8 +149,7 @@ function FoundResult({
       <div className="w-full max-w-sm rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
         <div className="flex flex-col gap-4">
           {profiles.map((profile, i) => {
-            const config = PLATFORM_CONFIG[profile.platform];
-            if (!config) return null;
+            const config = getPlatformConfig(profile.platform);
 
             return (
               <div key={profile.platform}>
