@@ -46,3 +46,13 @@ export async function togglePlateVerify(id: string) {
   revalidatePath("/admin");
   return result;
 }
+
+export async function updateReportStatus(id: string, status: string, adminNote?: string) {
+  const result = await adminFetch(`/api/admin/reports/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify({ status, adminNote }),
+  });
+  revalidatePath("/admin/reports");
+  revalidatePath("/admin");
+  return result;
+}
