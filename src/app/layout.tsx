@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { JetBrains_Mono } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { I18nProvider } from "@/i18n";
 import "./globals.css";
 
 const pixelFont = JetBrains_Mono({
@@ -48,9 +49,11 @@ export default function RootLayout({
   return (
     <html lang="tr" className={`${pixelFont.variable} h-full`}>
       <body className="min-h-full flex flex-col bg-[#0a1628] text-white font-mono">
-        <Navbar />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <I18nProvider>
+          <Navbar />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </I18nProvider>
       </body>
     </html>
   );

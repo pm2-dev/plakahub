@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useI18n } from "@/i18n";
 
 function PixelCar() {
   return (
@@ -22,6 +23,7 @@ function PixelCar() {
 export default function Home() {
   const [plaka, setPlaka] = useState("");
   const router = useRouter();
+  const { t } = useI18n();
 
   function handleSearch() {
     const cleaned = plaka.replace(/\s+/g, "").toUpperCase();
@@ -41,10 +43,10 @@ export default function Home() {
 
         <div className="text-center">
           <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-[#FFC812] uppercase">
-            PLAKA SORGULA
+            {t.home.title}
           </h1>
           <p className="mt-3 text-sm sm:text-base text-[#006FDF]">
-            &gt; Trafikte gordugn aracin sahibini bul_
+            {t.home.subtitle}
           </p>
         </div>
 
@@ -66,8 +68,8 @@ export default function Home() {
                 type="text"
                 value={plaka}
                 onChange={(e) => setPlaka(e.target.value.toUpperCase())}
-                placeholder="34 ABC 123"
-                aria-label="Plaka numarasi"
+                placeholder={t.home.placeholder}
+                aria-label={t.home.ariaLabel}
                 maxLength={12}
                 autoComplete="off"
                 spellCheck={false}
@@ -76,7 +78,7 @@ export default function Home() {
 
               <button
                 type="submit"
-                aria-label="Plaka sorgula"
+                aria-label={t.home.ariaLabel}
                 className="flex w-14 items-center justify-center bg-[#FFC812] text-[#0a1628] font-extrabold text-xl hover:bg-white transition-colors"
               >
                 &gt;
@@ -99,7 +101,7 @@ export default function Home() {
       </div>
 
       <p className="absolute bottom-6 z-10 px-4 text-center text-xs text-[#006FDF]/60 uppercase">
-        [ Sadece dogrulanmis arac sahipleri gosterilir ]
+        {t.home.footer}
       </p>
     </div>
   );
