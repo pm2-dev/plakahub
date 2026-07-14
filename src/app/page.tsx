@@ -99,8 +99,7 @@ export default function Home() {
       </div>
 
       <p className="absolute bottom-6 px-4 text-center text-xs text-slate-400">
-        Vercel üzerinde güvenle barındırılmaktadır · Sadece doğrulanmış araç
-        sahipleri gösterilir.
+        Sadece doğrulanmış araç sahipleri gösterilir.
       </p>
     </div>
   );
