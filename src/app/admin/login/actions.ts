@@ -52,3 +52,9 @@ export async function adminLogin(
 
   redirect("/admin");
 }
+
+export async function adminLogout(): Promise<void> {
+  const cookieStore = await cookies();
+  cookieStore.delete("admin_token");
+  redirect("/");
+}
