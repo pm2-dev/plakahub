@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Navbar() {
   return (
-    <nav className="fixed inset-x-0 top-0 z-50 w-full border-b border-slate-200/50 bg-white/70 backdrop-blur-md">
+    <nav className="fixed inset-x-0 top-0 z-50 w-full border-b border-slate-200/60 bg-white/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="text-xl font-bold tracking-tight text-blue-950">
           PlakaHub
@@ -10,7 +10,7 @@ export default function Navbar() {
 
         <a
           href="#indir"
-          className="inline-flex items-center gap-2 rounded-lg bg-blue-950 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-950/15 transition-all duration-200 hover:-translate-y-0.5 hover:bg-blue-900 hover:shadow-lg"
+          className="inline-flex items-center gap-2 rounded-md bg-blue-950 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-900"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
