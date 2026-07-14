@@ -1,121 +1,105 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Search, Car, Link as LinkIcon, MessageSquare, ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Nasıl Çalışır | PlakaHub",
+  title: "Nasil Calisir | PlakaHub",
   description:
-    "PlakaHub nasıl çalışır? Plaka sorgulama, sahiplenme, sosyal profil bağlama ve mesajlaşma adımlarını öğrenin.",
+    "PlakaHub nasil calisir? Plaka sorgulama, sahiplenme, sosyal profil baglama ve mesajlasma adimlarini ogrenin.",
 };
 
 const steps = [
   {
-    icon: Search,
-    color: "bg-blue-600",
-    ring: "bg-blue-100",
-    title: "Sorgula ve Keşfet",
+    num: "01",
+    title: "SORGULA",
     description:
-      "Sistemdeki herhangi bir plakayı aratın. Plaka sahiplenilmişse, kullanıcının maskelenmiş sosyal medya hesaplarını anında görüntüleyin.",
+      "Herhangi bir plakayi arat. Plaka sahiplenilmisse, kullanicinin sosyal medya hesaplarini aninda goruntule.",
+    color: "#006FDF",
   },
   {
-    icon: Car,
-    color: "bg-orange-500",
-    ring: "bg-orange-100",
-    title: "Plakanı Sahiplen",
+    num: "02",
+    title: "SAHIPLEN",
     description:
-      "Mobil uygulamamızı indirerek saniyeler içinde kendi plakanızı üzerinize kaydedin. Aracınızın dijital profilini oluşturun.",
+      "Mobil uygulamayi indirerek saniyeler icinde kendi plakani uzerine kaydet. Aracinin dijital profilini olustur.",
+    color: "#FFC812",
   },
   {
-    icon: LinkIcon,
-    color: "bg-purple-600",
-    ring: "bg-purple-100",
-    title: "Ağlarını Bağla",
+    num: "03",
+    title: "BAGLA",
     description:
-      "Instagram, X ve TikTok hesaplarınızı profiline entegre edin. Sizi bulmak isteyenlerin doğrudan onaylı hesaplarınıza ulaşmasını sağlayın.",
+      "Instagram, X ve TikTok hesaplarini profiline entegre et. Seni bulmak isteyenlerin dogrudan hesaplarina ulasmasini sagla.",
+    color: "#006FDF",
   },
   {
-    icon: MessageSquare,
-    color: "bg-emerald-600",
-    ring: "bg-emerald-100",
-    title: "Anında Mesajlaş",
+    num: "04",
+    title: "MESAJLAS",
     description:
-      "Trafikte iletişime geçmek istediğiniz plakaya doğrudan uygulama üzerinden iMessage kalitesinde mesaj gönderin. Anlık bildirimlerle haberdar olun.",
+      "Trafikte iletisime gecmek istedigin plakaya dogrudan uygulama uzerinden mesaj gonder. Anlik bildirimlerle haberdar ol.",
+    color: "#FFC812",
   },
 ];
 
 export default function HowItWorksPage() {
   return (
-    <>
+    <div className="min-h-screen bg-[#0a1628] pt-24 pb-16">
       {/* Hero */}
-      <section className="relative overflow-hidden bg-slate-50 pt-32 pb-20 sm:pt-40 sm:pb-28">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,rgba(148,163,184,0.15),transparent)]" />
-
-        <div className="relative mx-auto max-w-4xl px-4 text-center">
-          <p className="mb-4 text-sm font-semibold uppercase tracking-widest text-blue-600">
-            Nasıl Çalışır
-          </p>
-          <h1 className="text-5xl font-black tracking-tight text-slate-900 md:text-7xl">
-            Trafikteki Yeni
-            <br />
-            Sosyal Ağınız.
-          </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-slate-600 md:text-xl">
-            PlakaHub ile aracınız sadece bir taşıt değil, dijital dünyadaki yeni
-            kimliğiniz. İşte sistemin çalışma mantığı.
-          </p>
-        </div>
+      <section className="text-center px-4 pb-16">
+        <p className="mb-4 text-sm font-bold uppercase tracking-widest text-[#006FDF]">
+          &gt; NASIL CALISIR
+        </p>
+        <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-[#FFC812] uppercase">
+          TRAFIKTEKI YENI
+          <br />
+          SOSYAL AGIN
+        </h1>
+        <p className="mx-auto mt-6 max-w-xl text-sm sm:text-base text-[#006FDF]">
+          PlakaHub ile aracin sadece bir tasit degil, dijital dunyadaki yeni kimligi.
+        </p>
       </section>
 
       {/* Steps */}
-      <section className="bg-white py-20 sm:py-28">
-        <div className="mx-auto grid max-w-6xl gap-8 px-4 sm:px-6 md:grid-cols-2 lg:px-8">
-          {steps.map((step, i) => {
-            const Icon = step.icon;
-            return (
-              <div
-                key={step.title}
-                className="group rounded-3xl bg-white p-10 shadow-sm ring-1 ring-slate-100 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+      <section className="mx-auto max-w-4xl px-4 grid gap-6 sm:grid-cols-2">
+        {steps.map((step) => (
+          <div
+            key={step.num}
+            className="border-4 bg-[#112240] p-8 transition-colors hover:border-[#FFC812]"
+            style={{ borderColor: step.color }}
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <span
+                className="text-3xl font-extrabold"
+                style={{ color: step.color }}
               >
-                <div className="mb-6 flex items-center gap-4">
-                  <div className={`flex h-14 w-14 items-center justify-center rounded-2xl ${step.ring}`}>
-                    <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${step.color}`}>
-                      <Icon className="h-5 w-5 text-white" strokeWidth={2.5} />
-                    </div>
-                  </div>
-                  <span className="text-sm font-bold text-slate-300">
-                    0{i + 1}
-                  </span>
-                </div>
-                <h3 className="text-xl font-bold text-slate-900">
-                  {step.title}
-                </h3>
-                <p className="mt-3 leading-7 text-slate-600">
-                  {step.description}
-                </p>
-              </div>
-            );
-          })}
-        </div>
+                {step.num}
+              </span>
+              <div className="flex-1 h-[2px]" style={{ backgroundColor: step.color, opacity: 0.3 }} />
+            </div>
+            <h3 className="text-xl font-extrabold text-white uppercase mb-3">
+              {step.title}
+            </h3>
+            <p className="text-sm text-white/70 leading-relaxed">
+              {step.description}
+            </p>
+          </div>
+        ))}
       </section>
 
       {/* CTA */}
-      <section className="px-4 pb-24 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-5xl rounded-3xl bg-slate-900 px-8 py-16 text-center sm:px-16 sm:py-20">
-          <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
-            Hemen İlk Sorgunuzu Yapın
+      <section className="px-4 mt-16">
+        <div className="mx-auto max-w-4xl border-4 border-[#FFC812] bg-[#112240] px-8 py-12 sm:py-16 text-center">
+          <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#FFC812] uppercase">
+            ILK SORGUNU YAP
           </h2>
-          <p className="mx-auto mt-4 max-w-xl text-lg text-slate-400">
-            Bir plaka numarası girin, sonucu anında görün.
+          <p className="mt-4 text-sm text-[#006FDF]">
+            &gt; Bir plaka numarasi gir, sonucu aninda gor_
           </p>
           <Link
             href="/"
-            className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-8 py-4 text-sm font-bold text-slate-900 transition-all duration-200 hover:bg-slate-100"
+            className="mt-8 inline-flex items-center gap-2 border-4 border-[#FFC812] px-8 py-4 text-sm font-extrabold text-[#FFC812] uppercase hover:bg-[#FFC812] hover:text-[#0a1628] transition-colors"
           >
-            Plaka Sorgula
-            <ArrowRight className="h-4 w-4" />
+            &gt; PLAKA SORGULA
           </Link>
         </div>
       </section>
-    </>
+    </div>
   );
 }

@@ -1,12 +1,33 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #ffffff;
-  --color-foreground: #0f172a;
-  --font-sans: var(--font-inter);
+  --color-background: #0a1628;
+  --color-foreground: #ffffff;
+  --color-pixel-blue: #006FDF;
+  --color-pixel-yellow: #FFC812;
+  --color-pixel-dark: #0a1628;
+  --color-pixel-card: #112240;
+  --font-sans: var(--font-pixel);
+}
+
+@font-face {
+  font-family: "PixelFont";
+  src: local("Courier New"), local("Courier"), local("monospace");
+  font-display: swap;
 }
 
 body {
   background: var(--color-background);
   color: var(--color-foreground);
+  font-family: "Courier New", Courier, monospace;
+  image-rendering: pixelated;
+}
+
+* {
+  border-radius: 0 !important;
+}
+
+::selection {
+  background: #FFC812;
+  color: #0a1628;
 }

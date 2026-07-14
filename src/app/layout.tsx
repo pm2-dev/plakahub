@@ -1,37 +1,38 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { JetBrains_Mono } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+const pixelFont = JetBrains_Mono({
+  variable: "--font-pixel",
   subsets: ["latin"],
+  weight: ["400", "700", "800"],
 });
 
 export const metadata: Metadata = {
-  title: "PlakaHub | Araç Sahibini Bul",
+  title: "PlakaHub | Arac Sahibini Bul",
   description:
-    "Trafikteki araç plakalarını aratarak sahiplerinin sosyal medya hesaplarını kolayca bulun. PlakaHub ile araç sahiplerine anında ulaşın.",
+    "Trafikteki arac plakalarini aratarak sahiplerinin sosyal medya hesaplarini kolayca bulun. PlakaHub ile arac sahiplerine aninda ulasin.",
   keywords: [
     "plaka sorgulama",
-    "araç sahibi bulma",
+    "arac sahibi bulma",
     "plaka sosyal medya",
     "PlakaHub",
   ],
   openGraph: {
-    title: "PlakaHub | Araç Sahibini Bul",
+    title: "PlakaHub | Arac Sahibini Bul",
     description:
-      "Trafikteki araç plakalarını aratarak sahiplerinin sosyal medya hesaplarını kolayca bulun.",
+      "Trafikteki arac plakalarini aratarak sahiplerinin sosyal medya hesaplarini kolayca bulun.",
     siteName: "PlakaHub",
     locale: "tr_TR",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "PlakaHub | Araç Sahibini Bul",
+    title: "PlakaHub | Arac Sahibini Bul",
     description:
-      "Trafikteki araç plakalarını aratarak sahiplerinin sosyal medya hesaplarını kolayca bulun.",
+      "Trafikteki arac plakalarini aratarak sahiplerinin sosyal medya hesaplarini kolayca bulun.",
   },
   robots: {
     index: true,
@@ -45,8 +46,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="tr" className={`${inter.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col font-sans bg-white text-slate-900">
+    <html lang="tr" className={`${pixelFont.variable} h-full`}>
+      <body className="min-h-full flex flex-col bg-[#0a1628] text-white font-mono">
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />
