@@ -21,6 +21,13 @@ export default function Footer() {
           >
             Kullanım Koşulları
           </Link>
+          <span className="text-slate-300">·</span>
+          <Link
+            href="/nasil-calisir"
+            className="text-sm text-slate-500 transition-colors hover:text-blue-700"
+          >
+            Nasıl Çalışır
+          </Link>
         </nav>
       </div>
     </footer>
