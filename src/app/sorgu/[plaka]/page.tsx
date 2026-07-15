@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import SorguClient from "./SorguClient";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://165.245.210.97:3001";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://165.245.210.97";
 
 interface SocialProfile {
   platform: string;

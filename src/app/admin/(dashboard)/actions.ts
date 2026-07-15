@@ -3,7 +3,7 @@
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://165.245.210.97:3001";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://165.245.210.97";
 
 async function getToken(): Promise<string | null> {
   const cookieStore = await cookies();
