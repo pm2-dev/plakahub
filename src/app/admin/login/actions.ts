@@ -3,7 +3,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://165.245.210.97";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.plakahub.com";
 
 interface LoginResult {
   success: boolean;
