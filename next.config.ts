@@ -10,11 +10,11 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/api/:path*",
-        destination: "http://api.plakahub.com/api/:path*",
+        destination: "https://api.plakahub.com/api/:path*",
       },
       {
         source: "/uploads/:path*",
-        destination: "http://api.plakahub.com/uploads/:path*",
+        destination: "https://api.plakahub.com/uploads/:path*",
       },
     ];
   },
