@@ -13,6 +13,7 @@ interface PlateSearchResult {
   found: boolean;
   plateNumber: string;
   isVerified?: boolean;
+  verificationPhotoUrl?: string | null;
   isProfileComplete?: boolean;
   socialProfiles?: SocialProfile[];
 }
@@ -54,9 +55,13 @@ function PixelPlate({ plaka }: { plaka: string }) {
 function FoundResult({
   plaka,
   profiles,
+  isVerified,
+  verificationPhotoUrl,
 }: {
   plaka: string;
   profiles: SocialProfile[];
+  isVerified?: boolean;
+  verificationPhotoUrl?: string | null;
 }) {
   const { t } = useI18n();
 
@@ -67,6 +72,24 @@ function FoundResult({
       <p className="text-base font-bold text-[#FFC812] uppercase">
         {t.search.found}
       </p>
+
+      {isVerified && verificationPhotoUrl && (
+        <div className="w-full max-w-sm border-4 border-[#4ADE80] bg-[#112240]">
+          <img
+            src={verificationPhotoUrl}
+            alt={`${plaka} doğrulama fotoğrafı`}
+            className="w-full object-cover"
+          />
+          <div className="flex items-center justify-center gap-2 border-t-2 border-[#4ADE80]/30 px-4 py-2">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4 text-[#4ADE80]">
+              <path fillRule="evenodd" d="M16.403 12.652a3 3 0 0 0 0-5.304 3 3 0 0 0-3.75-3.751 3 3 0 0 0-5.305 0 3 3 0 0 0-3.751 3.75 3 3 0 0 0 0 5.305 3 3 0 0 0 3.75 3.751 3 3 0 0 0 5.305 0 3 3 0 0 0 3.751-3.75Zm-2.546-4.46a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clipRule="evenodd" />
+            </svg>
+            <span className="text-xs font-bold uppercase tracking-wider text-[#4ADE80]">
+              {t.search.verified}
+            </span>
+          </div>
+        </div>
+      )}
 
       <div className="w-full max-w-sm border-4 border-[#006FDF] bg-[#112240] p-6">
         <div className="flex flex-col gap-3">
@@ -138,7 +161,12 @@ export default function SorguClient({ result }: { result: PlateSearchResult }) {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-[#0a1628] px-4 py-16">
       {result.found && result.socialProfiles ? (
-        <FoundResult plaka={result.plateNumber} profiles={result.socialProfiles} />
+        <FoundResult
+          plaka={result.plateNumber}
+          profiles={result.socialProfiles}
+          isVerified={result.isVerified}
+          verificationPhotoUrl={result.verificationPhotoUrl}
+        />
       ) : (
         <NotFoundResult plaka={result.plateNumber} />
       )}

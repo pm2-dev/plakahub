@@ -56,3 +56,22 @@ export async function updateReportStatus(id: string, status: string, adminNote?:
   revalidatePath("/admin");
   return result;
 }
+
+export async function approveVerification(id: string) {
+  const result = await adminFetch(`/api/admin/verifications/${id}/approve`, { method: "PATCH" });
+  revalidatePath("/admin/verifications");
+  revalidatePath("/admin/plates");
+  revalidatePath("/admin");
+  return result;
+}
+
+export async function rejectVerification(id: string, note?: string) {
+  const result = await adminFetch(`/api/admin/verifications/${id}/reject`, {
+    method: "PATCH",
+    body: JSON.stringify({ note }),
+  });
+  revalidatePath("/admin/verifications");
+  revalidatePath("/admin/plates");
+  revalidatePath("/admin");
+  return result;
+}

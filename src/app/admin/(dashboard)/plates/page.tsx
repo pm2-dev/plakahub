@@ -8,6 +8,8 @@ interface Plate {
   id: string;
   plateNumber: string;
   isVerified: boolean;
+  verificationPhotoUrl: string | null;
+  verificationStatus: "PENDING" | "APPROVED" | "REJECTED";
   createdAt: string;
   user: { email: string };
 }

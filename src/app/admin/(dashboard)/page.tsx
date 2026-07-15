@@ -32,7 +32,7 @@ export default async function AdminDashboard() {
       <h2 className="mb-6 text-lg font-semibold text-gray-900">Dashboard</h2>
 
       {data?.success ? (
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-5">
           <StatCard
             label="Toplam Kullanıcı"
             value={data.stats.totalUsers}
@@ -62,6 +62,16 @@ export default async function AdminDashboard() {
               </svg>
             }
             accent="bg-green-100 text-green-700"
+          />
+          <StatCard
+            label="Bekleyen Doğrulamalar"
+            value={data.stats.pendingVerifications ?? 0}
+            icon={
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-6 w-6">
+                <path fillRule="evenodd" d="M1 8a2 2 0 0 1 2-2h.93a2 2 0 0 0 1.664-.89l.812-1.22A2 2 0 0 1 8.07 3h3.86a2 2 0 0 1 1.664.89l.812 1.22A2 2 0 0 0 16.07 6H17a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8Zm13.5 3a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM10 14a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" clipRule="evenodd" />
+              </svg>
+            }
+            accent="bg-purple-100 text-purple-700"
           />
           <StatCard
             label="Bekleyen Raporlar"

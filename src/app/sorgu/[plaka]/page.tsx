@@ -12,6 +12,7 @@ interface PlateSearchResult {
   found: boolean;
   plateNumber: string;
   isVerified?: boolean;
+  verificationPhotoUrl?: string | null;
   isProfileComplete?: boolean;
   socialProfiles?: SocialProfile[];
 }
