@@ -1,13 +1,58 @@
 "use client";
 
-import { useActionState } from "react";
+import { useState, useActionState } from "react";
 import { adminLogin } from "./actions";
 
+const API_URL = "/api/auth/admin-verify";
+
 export default function AdminLoginPage() {
+  const [step, setStep] = useState<"credentials" | "totp">("credentials");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [totpSecret, setTotpSecret] = useState("");
+  const [totpUri, setTotpUri] = useState("");
+  const [credError, setCredError] = useState("");
+  const [verifying, setVerifying] = useState(false);
+
   const [state, formAction, isPending] = useActionState(adminLogin, {
     success: false,
     message: "",
   });
+
+  const handleCredentials = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!username || !password) return;
+
+    setVerifying(true);
+    setCredError("");
+
+    try {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        setCredError(data.message || "Giriş başarısız.");
+        return;
+      }
+
+      setTotpSecret(data.totpSecret);
+      setTotpUri(data.totpUri);
+      setStep("totp");
+    } catch {
+      setCredError("Sunucuya bağlanılamadı.");
+    } finally {
+      setVerifying(false);
+    }
+  };
+
+  const qrUrl = totpUri
+    ? `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(totpUri)}`
+    : "";
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
@@ -21,85 +66,136 @@ export default function AdminLoginPage() {
           </p>
         </div>
 
-        <form
-          action={formAction}
-          className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm"
-        >
-          {state.message && !state.success && (
-            <div className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
-              {state.message}
-            </div>
-          )}
+        {step === "credentials" ? (
+          <form
+            onSubmit={handleCredentials}
+            className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm"
+          >
+            {credError && (
+              <div className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+                {credError}
+              </div>
+            )}
 
-          <div className="space-y-4">
-            <div>
-              <label
-                htmlFor="username"
-                className="mb-1.5 block text-sm font-medium text-gray-700"
-              >
-                Kullanıcı Adı
-              </label>
-              <input
-                id="username"
-                name="username"
-                type="text"
-                required
-                autoComplete="username"
-                className="h-11 w-full rounded-lg border border-gray-300 bg-white px-4 text-sm text-slate-900 outline-none transition-shadow placeholder:text-gray-400 focus:border-blue-900 focus:ring-2 focus:ring-blue-900"
-                placeholder="admin"
-              />
-            </div>
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="username" className="mb-1.5 block text-sm font-medium text-gray-700">
+                  Kullanıcı Adı
+                </label>
+                <input
+                  id="username"
+                  type="text"
+                  required
+                  autoComplete="username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="h-11 w-full rounded-lg border border-gray-300 bg-white px-4 text-sm text-slate-900 outline-none transition-shadow placeholder:text-gray-400 focus:border-blue-900 focus:ring-2 focus:ring-blue-900"
+                  placeholder="admin"
+                />
+              </div>
 
-            <div>
-              <label
-                htmlFor="password"
-                className="mb-1.5 block text-sm font-medium text-gray-700"
-              >
-                Şifre
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                autoComplete="current-password"
-                className="h-11 w-full rounded-lg border border-gray-300 bg-white px-4 text-sm text-slate-900 outline-none transition-shadow placeholder:text-gray-400 focus:border-blue-900 focus:ring-2 focus:ring-blue-900"
-                placeholder="••••••••"
-              />
+              <div>
+                <label htmlFor="password" className="mb-1.5 block text-sm font-medium text-gray-700">
+                  Şifre
+                </label>
+                <input
+                  id="password"
+                  type="password"
+                  required
+                  autoComplete="current-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="h-11 w-full rounded-lg border border-gray-300 bg-white px-4 text-sm text-slate-900 outline-none transition-shadow placeholder:text-gray-400 focus:border-blue-900 focus:ring-2 focus:ring-blue-900"
+                  placeholder="••••••••"
+                />
+              </div>
             </div>
 
-            <div>
-              <label
-                htmlFor="totpCode"
-                className="mb-1.5 block text-sm font-medium text-gray-700"
-              >
-                2FA Kodu
-              </label>
-              <input
-                id="totpCode"
-                name="totpCode"
-                type="text"
-                required
-                inputMode="numeric"
-                maxLength={6}
-                autoComplete="one-time-code"
-                className="h-11 w-full rounded-lg border border-gray-300 bg-white px-4 text-center text-lg font-mono font-bold tracking-[0.5em] text-slate-900 outline-none transition-shadow placeholder:text-gray-400 placeholder:tracking-normal placeholder:text-sm placeholder:font-normal focus:border-blue-900 focus:ring-2 focus:ring-blue-900"
-                placeholder="6 haneli kod"
-              />
-              <p className="mt-1.5 text-xs text-gray-400">
-                Authenticator uygulamanızdaki kodu girin
+            <button
+              type="submit"
+              disabled={verifying}
+              className="mt-6 flex h-11 w-full items-center justify-center rounded-lg bg-blue-950 text-sm font-semibold text-white transition-colors hover:bg-blue-900 disabled:opacity-50"
+            >
+              {verifying ? "Doğrulanıyor..." : "Devam Et"}
+            </button>
+          </form>
+        ) : (
+          <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+            <div className="mb-5 text-center">
+              <div className="mb-1 text-xs font-semibold uppercase tracking-wider text-green-600">
+                2FA Kurulumu
+              </div>
+              <p className="text-sm text-gray-500">
+                Authenticator uygulamanızla QR kodu tarayın
               </p>
             </div>
-          </div>
 
-          <button
-            type="submit"
-            disabled={isPending}
-            className="mt-6 flex h-11 w-full items-center justify-center rounded-lg bg-blue-950 text-sm font-semibold text-white transition-colors hover:bg-blue-900 disabled:opacity-50"
-          >
-            {isPending ? "Doğrulanıyor..." : "Giriş Yap"}
-          </button>
-        </form>
+            {qrUrl && (
+              <div className="mb-4 flex justify-center">
+                <img
+                  src={qrUrl}
+                  alt="2FA QR Code"
+                  width={180}
+                  height={180}
+                  className="rounded-lg border border-gray-200"
+                />
+              </div>
+            )}
+
+            <div className="mb-5 rounded-lg bg-gray-50 p-3">
+              <p className="mb-1 text-center text-[10px] font-medium uppercase tracking-wider text-gray-400">
+                Manuel giriş kodu
+              </p>
+              <p className="select-all break-all text-center font-mono text-xs font-bold tracking-wider text-gray-700">
+                {totpSecret}
+              </p>
+            </div>
+
+            {state.message && !state.success && (
+              <div className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+                {state.message}
+              </div>
+            )}
+
+            <form action={formAction}>
+              <input type="hidden" name="username" value={username} />
+              <input type="hidden" name="password" value={password} />
+
+              <div>
+                <label htmlFor="totpCode" className="mb-1.5 block text-sm font-medium text-gray-700">
+                  Authenticator Kodu
+                </label>
+                <input
+                  id="totpCode"
+                  name="totpCode"
+                  type="text"
+                  required
+                  inputMode="numeric"
+                  maxLength={6}
+                  autoComplete="one-time-code"
+                  autoFocus
+                  className="h-11 w-full rounded-lg border border-gray-300 bg-white px-4 text-center text-lg font-mono font-bold tracking-[0.5em] text-slate-900 outline-none transition-shadow placeholder:text-gray-400 placeholder:tracking-normal placeholder:text-sm placeholder:font-normal focus:border-blue-900 focus:ring-2 focus:ring-blue-900"
+                  placeholder="6 haneli kod"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={isPending}
+                className="mt-4 flex h-11 w-full items-center justify-center rounded-lg bg-blue-950 text-sm font-semibold text-white transition-colors hover:bg-blue-900 disabled:opacity-50"
+              >
+                {isPending ? "Doğrulanıyor..." : "Giriş Yap"}
+              </button>
+            </form>
+
+            <button
+              onClick={() => setStep("credentials")}
+              className="mt-3 w-full text-center text-xs text-gray-400 hover:text-gray-600"
+            >
+              ← Geri dön
+            </button>
+          </div>
+        )}
 
         <p className="mt-6 text-center text-xs text-gray-400">
           Bu panel 2FA korumalıdır. Sadece yetkili yöneticilere açıktır.
