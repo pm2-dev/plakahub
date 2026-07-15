@@ -2,29 +2,100 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import QRCode from "qrcode";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.plakahub.com";
 
 interface LoginResult {
   success: boolean;
   message: string;
-  step?: "credentials" | "totp";
+}
+
+interface VerifyResult {
+  success: boolean;
+  message: string;
+  qrDataUrl?: string;
+  totpSecret?: string;
+}
+
+export async function adminVerifyCredentials(
+  username: string,
+  password: string
+): Promise<VerifyResult> {
+  if (!username || !password) {
+    return { success: false, message: "Kullanıcı adı ve şifre zorunludur." };
+  }
+
+  try {
+    const res = await fetch(`${API_URL}/api/auth/admin-verify`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || !data.success) {
+      return { success: false, message: data.message || "Giriş başarısız." };
+    }
+
+    let qrDataUrl = "";
+    if (data.totpUri) {
+      qrDataUrl = await QRCode.toDataURL(data.totpUri, {
+        width: 200,
+        margin: 2,
+        color: { dark: "#1e293b", light: "#ffffff" },
+      });
+    }
+
+    const cookieStore = await cookies();
+    const credPayload = Buffer.from(
+      JSON.stringify({ username, password })
+    ).toString("base64");
+    cookieStore.set("admin_cred_temp", credPayload, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path: "/admin/login",
+      maxAge: 300,
+    });
+
+    return {
+      success: true,
+      message: "",
+      qrDataUrl,
+      totpSecret: data.totpSecret,
+    };
+  } catch {
+    return { success: false, message: "Sunucuya bağlanılamadı." };
+  }
 }
 
 export async function adminLogin(
   _prevState: LoginResult,
   formData: FormData
 ): Promise<LoginResult> {
-  const username = formData.get("username") as string;
-  const password = formData.get("password") as string;
   const totpCode = formData.get("totpCode") as string;
-
-  if (!username || !password) {
-    return { success: false, message: "Kullanıcı adı ve şifre zorunludur." };
-  }
 
   if (!totpCode) {
     return { success: false, message: "2FA kodu zorunludur." };
+  }
+
+  const cookieStore = await cookies();
+  const credCookie = cookieStore.get("admin_cred_temp")?.value;
+
+  if (!credCookie) {
+    return { success: false, message: "Oturum süresi doldu. Tekrar giriş yapın." };
+  }
+
+  let username: string;
+  let password: string;
+  try {
+    const parsed = JSON.parse(Buffer.from(credCookie, "base64").toString());
+    username = parsed.username;
+    password = parsed.password;
+  } catch {
+    return { success: false, message: "Geçersiz oturum. Tekrar giriş yapın." };
   }
 
   try {
@@ -40,7 +111,7 @@ export async function adminLogin(
       return { success: false, message: data.message || "Giriş başarısız." };
     }
 
-    const cookieStore = await cookies();
+    cookieStore.delete("admin_cred_temp");
     cookieStore.set("admin_token", data.token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -58,5 +129,6 @@ export async function adminLogin(
 export async function adminLogout(): Promise<void> {
   const cookieStore = await cookies();
   cookieStore.delete("admin_token");
+  cookieStore.delete("admin_cred_temp");
   redirect("/");
 }

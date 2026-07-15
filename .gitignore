@@ -45,3 +45,6 @@ next-env.d.ts
 
 .vercel
 .env*
+
+# mobile secrets
+plakahub-mobile/google-services-key.json

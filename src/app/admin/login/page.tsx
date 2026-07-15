@@ -1,18 +1,17 @@
 "use client";
 
 import { useState, useActionState } from "react";
-import { adminLogin } from "./actions";
-
-const API_URL = "/api/auth/admin-verify";
+import { adminLogin, adminVerifyCredentials } from "./actions";
 
 export default function AdminLoginPage() {
   const [step, setStep] = useState<"credentials" | "totp">("credentials");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [totpSecret, setTotpSecret] = useState("");
-  const [totpUri, setTotpUri] = useState("");
+  const [qrDataUrl, setQrDataUrl] = useState("");
   const [credError, setCredError] = useState("");
   const [verifying, setVerifying] = useState(false);
+  const [showSecret, setShowSecret] = useState(false);
 
   const [state, formAction, isPending] = useActionState(adminLogin, {
     success: false,
@@ -27,21 +26,16 @@ export default function AdminLoginPage() {
     setCredError("");
 
     try {
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-      });
+      const result = await adminVerifyCredentials(username, password);
 
-      const data = await res.json();
-
-      if (!res.ok || !data.success) {
-        setCredError(data.message || "Giriş başarısız.");
+      if (!result.success) {
+        setCredError(result.message);
         return;
       }
 
-      setTotpSecret(data.totpSecret);
-      setTotpUri(data.totpUri);
+      if (result.totpSecret) setTotpSecret(result.totpSecret);
+      if (result.qrDataUrl) setQrDataUrl(result.qrDataUrl);
+      setPassword("");
       setStep("totp");
     } catch {
       setCredError("Sunucuya bağlanılamadı.");
@@ -49,10 +43,6 @@ export default function AdminLoginPage() {
       setVerifying(false);
     }
   };
-
-  const qrUrl = totpUri
-    ? `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(totpUri)}`
-    : "";
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
@@ -130,10 +120,10 @@ export default function AdminLoginPage() {
               </p>
             </div>
 
-            {qrUrl && (
+            {qrDataUrl && (
               <div className="mb-4 flex justify-center">
                 <img
-                  src={qrUrl}
+                  src={qrDataUrl}
                   alt="2FA QR Code"
                   width={180}
                   height={180}
@@ -142,14 +132,25 @@ export default function AdminLoginPage() {
               </div>
             )}
 
-            <div className="mb-5 rounded-lg bg-gray-50 p-3">
-              <p className="mb-1 text-center text-[10px] font-medium uppercase tracking-wider text-gray-400">
-                Manuel giriş kodu
-              </p>
-              <p className="select-all break-all text-center font-mono text-xs font-bold tracking-wider text-gray-700">
-                {totpSecret}
-              </p>
-            </div>
+            {totpSecret && (
+              <div className="mb-5 rounded-lg bg-gray-50 p-3">
+                <p className="mb-1 text-center text-[10px] font-medium uppercase tracking-wider text-gray-400">
+                  Manuel giriş kodu
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setShowSecret(!showSecret)}
+                  className="w-full text-center text-xs text-blue-600 hover:text-blue-800"
+                >
+                  {showSecret ? "Gizle" : "Göster"}
+                </button>
+                {showSecret && (
+                  <p className="mt-1 select-all break-all text-center font-mono text-xs font-bold tracking-wider text-gray-700">
+                    {totpSecret}
+                  </p>
+                )}
+              </div>
+            )}
 
             {state.message && !state.success && (
               <div className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
@@ -158,9 +159,6 @@ export default function AdminLoginPage() {
             )}
 
             <form action={formAction}>
-              <input type="hidden" name="username" value={username} />
-              <input type="hidden" name="password" value={password} />
-
               <div>
                 <label htmlFor="totpCode" className="mb-1.5 block text-sm font-medium text-gray-700">
                   Authenticator Kodu
