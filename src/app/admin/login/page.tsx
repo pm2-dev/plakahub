@@ -34,19 +34,19 @@ export default function AdminLoginPage() {
           <div className="space-y-4">
             <div>
               <label
-                htmlFor="email"
+                htmlFor="username"
                 className="mb-1.5 block text-sm font-medium text-gray-700"
               >
-                E-posta
+                Kullanıcı Adı
               </label>
               <input
-                id="email"
-                name="email"
-                type="email"
+                id="username"
+                name="username"
+                type="text"
                 required
-                autoComplete="email"
+                autoComplete="username"
                 className="h-11 w-full rounded-lg border border-gray-300 bg-white px-4 text-sm text-slate-900 outline-none transition-shadow placeholder:text-gray-400 focus:border-blue-900 focus:ring-2 focus:ring-blue-900"
-                placeholder="admin@plakahub.com"
+                placeholder="admin"
               />
             </div>
 
@@ -67,6 +67,29 @@ export default function AdminLoginPage() {
                 placeholder="••••••••"
               />
             </div>
+
+            <div>
+              <label
+                htmlFor="totpCode"
+                className="mb-1.5 block text-sm font-medium text-gray-700"
+              >
+                2FA Kodu
+              </label>
+              <input
+                id="totpCode"
+                name="totpCode"
+                type="text"
+                required
+                inputMode="numeric"
+                maxLength={6}
+                autoComplete="one-time-code"
+                className="h-11 w-full rounded-lg border border-gray-300 bg-white px-4 text-center text-lg font-mono font-bold tracking-[0.5em] text-slate-900 outline-none transition-shadow placeholder:text-gray-400 placeholder:tracking-normal placeholder:text-sm placeholder:font-normal focus:border-blue-900 focus:ring-2 focus:ring-blue-900"
+                placeholder="6 haneli kod"
+              />
+              <p className="mt-1.5 text-xs text-gray-400">
+                Authenticator uygulamanızdaki kodu girin
+              </p>
+            </div>
           </div>
 
           <button
@@ -74,12 +97,12 @@ export default function AdminLoginPage() {
             disabled={isPending}
             className="mt-6 flex h-11 w-full items-center justify-center rounded-lg bg-blue-950 text-sm font-semibold text-white transition-colors hover:bg-blue-900 disabled:opacity-50"
           >
-            {isPending ? "Giriş yapılıyor..." : "Giriş Yap"}
+            {isPending ? "Doğrulanıyor..." : "Giriş Yap"}
           </button>
         </form>
 
         <p className="mt-6 text-center text-xs text-gray-400">
-          Bu panel sadece yetkili yöneticilere açıktır.
+          Bu panel 2FA korumalıdır. Sadece yetkili yöneticilere açıktır.
         </p>
       </div>
     </div>
