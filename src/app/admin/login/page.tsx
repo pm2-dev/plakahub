@@ -7,11 +7,8 @@ export default function AdminLoginPage() {
   const [step, setStep] = useState<"credentials" | "totp">("credentials");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [totpSecret, setTotpSecret] = useState("");
-  const [qrDataUrl, setQrDataUrl] = useState("");
   const [credError, setCredError] = useState("");
   const [verifying, setVerifying] = useState(false);
-  const [showSecret, setShowSecret] = useState(false);
 
   const [state, formAction, isPending] = useActionState(adminLogin, {
     success: false,
@@ -33,8 +30,6 @@ export default function AdminLoginPage() {
         return;
       }
 
-      if (result.totpSecret) setTotpSecret(result.totpSecret);
-      if (result.qrDataUrl) setQrDataUrl(result.qrDataUrl);
       setPassword("");
       setStep("totp");
     } catch {
@@ -112,45 +107,13 @@ export default function AdminLoginPage() {
         ) : (
           <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
             <div className="mb-5 text-center">
-              <div className="mb-1 text-xs font-semibold uppercase tracking-wider text-green-600">
-                2FA Kurulumu
+              <div className="mb-1 text-xs font-semibold uppercase tracking-wider text-blue-600">
+                2FA Doğrulama
               </div>
               <p className="text-sm text-gray-500">
-                Authenticator uygulamanızla QR kodu tarayın
+                Authenticator uygulamanızdaki 6 haneli kodu girin
               </p>
             </div>
-
-            {qrDataUrl && (
-              <div className="mb-4 flex justify-center">
-                <img
-                  src={qrDataUrl}
-                  alt="2FA QR Code"
-                  width={180}
-                  height={180}
-                  className="rounded-lg border border-gray-200"
-                />
-              </div>
-            )}
-
-            {totpSecret && (
-              <div className="mb-5 rounded-lg bg-gray-50 p-3">
-                <p className="mb-1 text-center text-[10px] font-medium uppercase tracking-wider text-gray-400">
-                  Manuel giriş kodu
-                </p>
-                <button
-                  type="button"
-                  onClick={() => setShowSecret(!showSecret)}
-                  className="w-full text-center text-xs text-blue-600 hover:text-blue-800"
-                >
-                  {showSecret ? "Gizle" : "Göster"}
-                </button>
-                {showSecret && (
-                  <p className="mt-1 select-all break-all text-center font-mono text-xs font-bold tracking-wider text-gray-700">
-                    {totpSecret}
-                  </p>
-                )}
-              </div>
-            )}
 
             {state.message && !state.success && (
               <div className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">

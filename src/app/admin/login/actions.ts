@@ -2,7 +2,6 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import QRCode from "qrcode";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.plakahub.com";
 
@@ -14,8 +13,6 @@ interface LoginResult {
 interface VerifyResult {
   success: boolean;
   message: string;
-  qrDataUrl?: string;
-  totpSecret?: string;
 }
 
 export async function adminVerifyCredentials(
@@ -39,15 +36,6 @@ export async function adminVerifyCredentials(
       return { success: false, message: data.message || "Giriş başarısız." };
     }
 
-    let qrDataUrl = "";
-    if (data.totpUri) {
-      qrDataUrl = await QRCode.toDataURL(data.totpUri, {
-        width: 200,
-        margin: 2,
-        color: { dark: "#1e293b", light: "#ffffff" },
-      });
-    }
-
     const cookieStore = await cookies();
     const credPayload = Buffer.from(
       JSON.stringify({ username, password })
@@ -60,12 +48,7 @@ export async function adminVerifyCredentials(
       maxAge: 300,
     });
 
-    return {
-      success: true,
-      message: "",
-      qrDataUrl,
-      totpSecret: data.totpSecret,
-    };
+    return { success: true, message: "" };
   } catch {
     return { success: false, message: "Sunucuya bağlanılamadı." };
   }
